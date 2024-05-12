@@ -1,0 +1,36 @@
+#Charts
+Track-Daily-Stats:
+  Joins: true
+  Most-Players-Online: True
+
+
+
+#Bar Charts
+Use-Bar-Charts: false #Else Use Line graphs
+Bar-Width: 70
+Bar-Spacing: 50
+Bar-Color: 255, 0, 0
+Bar-Outline-Color: 255, 0, 0
+Bar-Outline-Width: 5
+
+#Line Graphs
+Line-Width: 5
+Line-Color: 255, 0, 0
+Line-Inside-Color: 255, 112, 112
+Line-Value-Spacing: 160
+
+#######################################################################
+#                         Discord Integration                         #
+#######################################################################
+#Available Variables: %date%, %hour%, %day%, %day_of_the_month%, %month%, %year%, &server_name%, %total_joins%, %most_players_at_once%, %most_players_at_once_time%
+#######################################################################
+Enable-Discord: false
+Guild-Id: 000000000000000000000 #Replace With The actual id of your guild (server)
+Daily-Stats:
+  enable: false
+  Channel-id: 00000000000000000000 #Replace With the actual id of the channel
+  use-embeds: true #Else use normal messages
+  message: '### Here are the stats for %date%: \n\n **Total Joins:** %total_joins% \n\n **Most Players:** %most_players_at_once%, at %most_players_at_once_time%' #Add \n\n For a new line
+  add-chart: true #Add a chart to the message of most players at every hour?
+
+
