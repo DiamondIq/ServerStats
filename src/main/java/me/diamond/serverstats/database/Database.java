@@ -6,14 +6,16 @@ import java.sql.SQLException;
 
 public class Database {
     private static Connection connection = null;
-    public Database(String path) throws SQLException {
-        connection = DriverManager.getConnection("jdbc:sqlite:" + path);
-        DatabaseUtils.createMostPlayerPerDayTable();
-        DatabaseUtils.createMostPlayerPerHourTable();
-    }
 
-    public static Connection get(){
+    public static Connection get() {
         return connection;
     }
 
+    public static void init(String path) throws SQLException {
+        connection = DriverManager.getConnection("jdbc:sqlite:" + path);
+        DatabaseUtils.MostPlayersPerDay.createMostPlayerPerDayTable();
+        DatabaseUtils.MostPlayersPerHour.createMostPlayerPerHourTable();
+        DatabaseUtils.Joins.createJoinsTable();
+        DatabaseUtils.Kills.createKillsTable();
+    }
 }

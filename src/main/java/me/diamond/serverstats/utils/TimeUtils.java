@@ -1,7 +1,7 @@
 package me.diamond.serverstats.utils;
 
-import java.sql.Date;
 import java.util.Calendar;
+import java.util.Date;
 
 public class TimeUtils {
     public static long getStartOfDay(Date date) {
@@ -11,6 +11,7 @@ public class TimeUtils {
         calendar.set(Calendar.MINUTE, 0);
         calendar.set(Calendar.SECOND, 0);
         calendar.set(Calendar.MILLISECOND, 0);
+        System.out.println(calendar.getTimeInMillis());
         return calendar.getTimeInMillis();
     }
 
@@ -22,6 +23,7 @@ public class TimeUtils {
         calendar.set(Calendar.MINUTE, 59);
         calendar.set(Calendar.SECOND, 59);
         calendar.set(Calendar.MILLISECOND, 999);
+        System.out.println(calendar.getTimeInMillis());
         return calendar.getTimeInMillis() + 1; // Add 1 millisecond to get the end of the day
     }
 

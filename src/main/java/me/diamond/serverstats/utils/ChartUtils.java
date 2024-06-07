@@ -1,30 +1,56 @@
 package me.diamond.serverstats.utils;
 
+import me.diamond.serverstats.ServerStats;
 import me.diamond.serverstats.config.Config;
 
 import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.geom.Ellipse2D;
 import java.awt.image.BufferedImage;
-import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.URL;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 public class ChartUtils {
 
-    public static BufferedImage generateBarChart(ArrayList<Integer> data) throws IOException, FontFormatException {
-        InputStream fontStream = Files.newInputStream(Paths.get("minecraft_font.ttf"));
-        Font font = Font.createFont(Font.TRUETYPE_FONT, fontStream);
-        GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
-        ge.registerFont(font);
+    private static Font loadFont(String path) {
+        try (InputStream fontStream = ChartUtils.class.getResourceAsStream(path)) {
+            if (fontStream == null) {
+                throw new IOException("Font resource not found: " + path);
+            }
+            Font font = Font.createFont(Font.TRUETYPE_FONT, fontStream);
+            GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
+            ge.registerFont(font);
+            return font;
+        } catch (FontFormatException | IOException e) {
+            e.printStackTrace();
+            return new Font("SansSerif", Font.PLAIN, 12); // Fallback font
+        }
+    }
 
-        InputStream existingImageStream = Files.newInputStream(Paths.get("Chart_Template.jpg"));
-        BufferedImage existingImage = ImageIO.read(existingImageStream);
+    public static BufferedImage generateBarChart(HashMap<Integer, String> map) {
+        ArrayList<Integer> data = new ArrayList<>();
+        ArrayList<String> data2 = new ArrayList<>();
+        map.forEach((key, value) -> {
+            data.add(key);
+        });
+        map.forEach((key, value) -> {
+            data2.add(value);
+        });
+
+        Font font = loadFont("/minecraft_font.ttf");
+        BufferedImage existingImage = null;
+
+        try (InputStream existingImageStream = ServerStats.class.getResourceAsStream("/Chart_Template.jpg")) {
+            if (existingImageStream == null) {
+                throw new IOException("Image resource not found: Chart_Template.jpg");
+            }
+            existingImage = ImageIO.read(existingImageStream);
+        } catch (IOException e) {
+            e.printStackTrace();
+            return null;
+        }
 
         Graphics2D g2d = existingImage.createGraphics();
 
@@ -44,17 +70,24 @@ public class ChartUtils {
         int barSpacing = Config.get().getInt("Bar-Spacing"); // Spacing between bars
         int startX = 255; // X-coordinate where the bars start
         int startY = 695; // Y-coordinate where the bars start
+        int integer = 0;
         for (int value : data) {
             int barHeight = (37 / i) * value + 37;
-            String[] rgb1 = Config.get().getString("Bar-Color").split(",");
+            String[] rgb1 = Config.get().getString("Bar-Color").split(", ");
             int r = Integer.parseInt(rgb1[0]);
             int g = Integer.parseInt(rgb1[1]);
             int b = Integer.parseInt(rgb1[2]);
 
-            String[] rgb2 = Config.get().getString("Bar-Outline-Color").split(",");
+            String[] rgb2 = Config.get().getString("Bar-Outline-Color").split(", ");
             int r1 = Integer.parseInt(rgb2[0]);
             int g1 = Integer.parseInt(rgb2[1]);
             int b1 = Integer.parseInt(rgb2[2]);
+
+            float x2 = (float) data2.get(integer).length() / 2 * 16.22f;
+            g2d.setColor(Color.black);
+            g2d.setFont(font.deriveFont(Font.PLAIN, 16.22F));
+            g2d.drawString(data2.get(integer), startX, 726);
+            integer++;
 
             g2d.setColor(new Color(r, g, b));
             g2d.fillRect(startX, startY - barHeight, barWidth, barHeight);
@@ -64,25 +97,32 @@ public class ChartUtils {
             startX += (barSpacing + barWidth);
         }
 
-
-
         g2d.dispose();
-
-
-
-
         return existingImage;
-
     }
 
-    public static BufferedImage generateLineGraph(ArrayList<Integer> data) throws IOException, FontFormatException {
-        InputStream fontStream = Files.newInputStream(Paths.get("minecraft_font.ttf"));
-        Font font = Font.createFont(Font.TRUETYPE_FONT, fontStream);
-        GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
-        ge.registerFont(font);
+    public static BufferedImage generateLineGraph(HashMap<Integer, String> map) {
+        ArrayList<Integer> data = new ArrayList<>();
+        ArrayList<String> data2 = new ArrayList<>();
+        map.forEach((key, value) -> {
+            data.add(key);
+        });
+        map.forEach((key, value) -> {
+            data2.add(value);
+        });
 
-        InputStream existingImageStream = Files.newInputStream(Paths.get("Chart_Template.jpg"));
-        BufferedImage existingImage = ImageIO.read(existingImageStream);
+        Font font = loadFont("/minecraft_font.ttf");
+        BufferedImage existingImage = null;
+
+        try (InputStream existingImageStream = ServerStats.class.getResourceAsStream("/Chart_Template.jpg")) {
+            if (existingImageStream == null) {
+                throw new IOException("Image resource not found: Chart_Template.jpg");
+            }
+            existingImage = ImageIO.read(existingImageStream);
+        } catch (IOException e) {
+            e.printStackTrace();
+            return null;
+        }
 
         Graphics2D g2d = existingImage.createGraphics();
 
@@ -98,7 +138,6 @@ public class ChartUtils {
             g2d.drawString(String.valueOf(tests), textX, textY);
         }
 
-
         int startY = 695; // Y-coordinate where the bars start
         int valueSpacing = Config.get().getInt("Line-Value-Spacing"); // Spacing between bars
         int starttX = (int) (175 - valueSpacing + Config.get().getInt("Line-Width") / (5 / 1.5)); // X-coordinate where the bars start
@@ -107,20 +146,26 @@ public class ChartUtils {
         polygon.addPoint((starttX + valueSpacing), starttY);
         int y;
         int x = 0;
+        int integer = 0;
         for (int value : data) {
             int height = (37 / i) * value + 37;
             y = starttY - height;
-            x = starttX + valueSpacing;
-            starttX += valueSpacing;
+            x = starttX - valueSpacing;
+            g2d.setColor(Color.black);
+            g2d.setFont(font.deriveFont(Font.PLAIN));
+            float x2 = (float) data2.get(integer).length() / 2 * 16.22f;
+            g2d.drawString(data2.get(integer), x, 726);
+            integer++;
+            starttX -= valueSpacing;
             polygon.addPoint(x, y);
         }
         polygon.addPoint(x, starttY);
-        String[] rgb1 = Config.get().getString("Line-Inside-Color").split(",");
+        String[] rgb1 = Config.get().getString("Line-Inside-Color").split(", ");
         int r = Integer.parseInt(rgb1[0]);
         int g = Integer.parseInt(rgb1[1]);
         int b = Integer.parseInt(rgb1[2]);
 
-        String[] rgb2 = Config.get().getString("Line-Color").split(",");
+        String[] rgb2 = Config.get().getString("Line-Color").split(", ");
         int r1 = Integer.parseInt(rgb2[0]);
         int g1 = Integer.parseInt(rgb2[1]);
         int b1 = Integer.parseInt(rgb2[2]);
@@ -131,12 +176,6 @@ public class ChartUtils {
         g2d.drawPolygon(polygon);
 
         g2d.dispose();
-
-
         return existingImage;
-
     }
-
-
 }
-

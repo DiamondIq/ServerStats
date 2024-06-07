@@ -1,5 +1,5 @@
 #Charts
-Track-Daily-Stats:
+Track-Stats:
   Joins: true
   Most-Players-Online: True
 
@@ -22,15 +22,20 @@ Line-Value-Spacing: 160
 #######################################################################
 #                         Discord Integration                         #
 #######################################################################
-#Available Variables: %date%, %hour%, %day%, %day_of_the_month%, %month%, %year%, &server_name%, %total_joins%, %most_players_at_once%, %most_players_at_once_time%
+#Available Variables: %date%, %hour%, %day%, %day_of_the_month%, %month%,
+#%year%, &server_name%, %total_joins%, %most_players_at_once%, %most_players_at_once_time%
 #######################################################################
 Enable-Discord: false
+Bot-Token: '00000000000000000000000000000000000000' #Enter Bot Token
 Guild-Id: 000000000000000000000 #Replace With The actual id of your guild (server)
+Commands:
+  Server-Stats:
+    Players-Online-Msg: '**Most Players:** %most_players_at_once%, at %most_players_at_once_time%\\n**Date:** %date%\\n**Time:** %hour%'
 Daily-Stats:
   enable: false
   Channel-id: 00000000000000000000 #Replace With the actual id of the channel
   use-embeds: true #Else use normal messages
-  message: '### Here are the stats for %date%: \n\n **Total Joins:** %total_joins% \n\n **Most Players:** %most_players_at_once%, at %most_players_at_once_time%' #Add \n\n For a new line
+  message: '### Here are the stats for %date%:\\n\\n**Total Joins:** %total_joins%\\n\\n**Most Players:** %most_players_at_once%, at %most_players_at_once_time%' #Add \\n For a new line
   add-chart: true #Add a chart to the message of most players at every hour?
 
 

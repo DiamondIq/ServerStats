@@ -2,6 +2,6 @@ name: ServerStats
 version: '${project.version}'
 main: me.diamond.serverstats.ServerStats
 api-version: '1.20'
-commmands:
+commands:
   stats:
     description: 'Check The stats of the server'
